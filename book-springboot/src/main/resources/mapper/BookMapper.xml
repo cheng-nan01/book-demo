@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.BookMapper">
+
+    <resultMap id="bookMap" type="com.example.entity.Book">
+        <id property="id" column="id"/>
+        <result property="isbn" column="isbn"/>
+        <result property="title" column="title"/>
+        <result property="author" column="author"/>
+        <result property="publisher" column="publisher"/>
+        <result property="price" column="price"/>
+        <result property="costPrice" column="cost_price"/>
+        <result property="stock" column="stock"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="bookMap">
+        SELECT * FROM books ORDER BY id DESC
+    </select>
+
+    <select id="findById" resultMap="bookMap">
+        SELECT * FROM books WHERE id = #{id}
+    </select>
+
+    <select id="findByIsbn" resultMap="bookMap">
+        SELECT * FROM books WHERE isbn = #{isbn}
+    </select>
+
+    <select id="search" resultMap="bookMap">
+        SELECT * FROM books
+        WHERE 1=1
+            <if test="keyword != null and keyword != ''">
+                AND (title LIKE CONCAT('%', #{keyword}, '%')
+                     OR author LIKE CONCAT('%', #{keyword}, '%')
+                     OR isbn LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="stockStatus != null and stockStatus == 'low'">
+                AND stock BETWEEN 1 AND 9
+            </if>
+            <if test="stockStatus != null and stockStatus == 'zero'">
+                AND stock = 0
+            </if>
+            <if test="publisher != null and publisher != ''">
+                AND publisher = #{publisher}
+            </if>
+        ORDER BY id DESC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO books (isbn, title, author, publisher, price, cost_price, stock, created_at, updated_at)
+        VALUES (#{isbn}, #{title}, #{author}, #{publisher}, #{price}, #{costPrice}, #{stock}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="update">
+        UPDATE books SET
+            isbn = #{isbn}, title = #{title}, author = #{author},
+            publisher = #{publisher}, price = #{price}, cost_price = #{costPrice},
+            stock = #{stock}, updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM books WHERE id = #{id}
+    </delete>
+
+    <update id="updateStock">
+        UPDATE books SET stock = stock + #{delta} WHERE id = #{id}
+    </update>
+
+    <select id="existsById" resultType="boolean">
+        SELECT COUNT(*) > 0 FROM books WHERE id = #{id}
+    </select>
+
+</mapper>

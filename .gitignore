@@ -1,0 +1,22 @@
+# IDE
+.idea/
+*.iml
+
+# Maven
+target/
+
+# Node
+node_modules/
+dist/
+
+# Claude
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 测试残留
+screenshots/
+*.png
+*.jpg

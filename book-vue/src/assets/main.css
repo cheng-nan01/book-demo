@@ -1,0 +1,61 @@
+@import './base.css';
+
+/* Font stack override — adds CJK support */
+html, body, #app {
+  height: 100%;
+  font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== Global utility classes ===== */
+
+.glass-panel {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04);
+  padding: 20px;
+}
+
+.page-header {
+  margin-bottom: 20px;
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
+}
+
+.page-title .el-icon {
+  color: #3b82f6;
+}
+
+.search-section,
+.filter-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.table-section,
+.chart-section {
+  min-height: 200px;
+}
+
+.pagination-section {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.chart-container {
+  width: 100%;
+  height: 450px;
+}

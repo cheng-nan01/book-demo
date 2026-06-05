@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.PurchaseMapper">
+
+    <resultMap id="purchaseMap" type="com.example.entity.Purchase">
+        <id property="id" column="id"/>
+        <result property="bookId" column="book_id"/>
+        <result property="bookTitle" column="book_title"/>
+        <result property="quantity" column="quantity"/>
+        <result property="unitPrice" column="unit_price"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="purchaseDate" column="purchase_date"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="purchaseMap">
+        SELECT p.id, p.book_id, b.title AS book_title,
+               p.quantity, p.unit_price, p.total_amount, p.purchase_date
+        FROM purchases p, books b
+        WHERE p.book_id = b.id
+        ORDER BY p.purchase_date DESC
+    </select>
+
+    <select id="findById" resultMap="purchaseMap">
+        SELECT p.id, p.book_id, b.title AS book_title,
+               p.quantity, p.unit_price, p.total_amount, p.purchase_date
+        FROM purchases p, books b
+        WHERE p.book_id = b.id AND p.id = #{id}
+    </select>
+
+    <select id="findByBookId" resultMap="purchaseMap">
+        SELECT p.id, p.book_id, b.title AS book_title,
+               p.quantity, p.unit_price, p.total_amount, p.purchase_date
+        FROM purchases p, books b
+        WHERE p.book_id = b.id AND p.book_id = #{bookId}
+        ORDER BY p.purchase_date DESC
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO purchases (book_id, quantity, unit_price, total_amount, purchase_date)
+        VALUES (#{bookId}, #{quantity}, #{unitPrice}, #{totalAmount}, #{purchaseDate})
+    </insert>
+
+    <select id="existsByBookId" resultType="boolean">
+        SELECT COUNT(*) > 0 FROM purchases WHERE book_id = #{bookId}
+    </select>
+
+    <select id="getTotalPurchaseAmount" resultType="double">
+        SELECT COALESCE(SUM(total_amount), 0) FROM purchases
+        WHERE purchase_date BETWEEN #{startDate} AND #{endDate}
+    </select>
+
+</mapper>
