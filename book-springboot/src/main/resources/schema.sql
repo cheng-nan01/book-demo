@@ -69,12 +69,3 @@ CREATE TABLE IF NOT EXISTS sale_items (
     CONSTRAINT fk_saleitem_book FOREIGN KEY (book_id) REFERENCES books(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='销售明细表';
 
--- ===== 索引：加速常用查询 =====
-CREATE INDEX idx_sales_date     ON sales(sale_date);       -- 按日期范围查销售 + 月度统计 GROUP BY
-CREATE INDEX idx_sales_customer ON sales(customer_id);     -- 按客户查销售 + 删除客户前校验
-CREATE INDEX idx_saleitems_sale ON sale_items(sale_id);    -- 查订单明细
-CREATE INDEX idx_saleitems_book ON sale_items(book_id);    -- 图书销量排行 + 删除图书前校验
-CREATE INDEX idx_purchases_book ON purchases(book_id);     -- 查图书进货记录 + 删除图书前校验
-CREATE INDEX idx_purchases_date ON purchases(purchase_date); -- 按日期范围查进货
-CREATE INDEX idx_books_title    ON books(title);           -- 书名模糊搜索
-CREATE INDEX idx_books_author   ON books(author);          -- 作者模糊搜索

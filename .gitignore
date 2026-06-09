@@ -1,6 +1,20 @@
 # IDE
 .idea/
 *.iml
+.vscode/
+*.code-workspace
+
+# Editor
+.editorconfig
+
+# AI
+.claude/
+.cursor/
+.windsurf/
+.trae/
+.continue/
+.aider*
+.github/copilot-instructions.md
 
 # Maven
 target/
@@ -9,14 +23,15 @@ target/
 node_modules/
 dist/
 
-# Claude
-.claude/
-
 # OS
 .DS_Store
 Thumbs.db
 
-# 测试残留
+# Temp
 screenshots/
 *.png
 *.jpg
+.docx_render/
+.docx_render_opt/
+.qa_pkgs/
+_qa_tmp/
