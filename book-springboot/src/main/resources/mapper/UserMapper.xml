@@ -3,14 +3,7 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.UserMapper">
 
-    <resultMap id="userMap" type="com.example.entity.User">
-        <id property="id" column="id"/>
-        <result property="username" column="username"/>
-        <result property="password" column="password"/>
-        <result property="createdAt" column="created_at"/>
-    </resultMap>
-
-    <select id="findByUsername" resultMap="userMap">
+    <select id="findByUsername" resultType="com.example.entity.User">
         SELECT * FROM users WHERE username = #{username}
     </select>
 
@@ -23,8 +16,21 @@
         VALUES (#{username}, #{password}, #{createdAt})
     </insert>
 
-    <select id="findById" resultMap="userMap">
+    <select id="findById" resultType="com.example.entity.User">
         SELECT * FROM users WHERE id = #{id}
+    </select>
+
+    <update id="updatePassword">
+        UPDATE users SET password = #{password} WHERE id = #{id}
+    </update>
+
+    <update id="updateUsername">
+        UPDATE users SET username = #{username} WHERE id = #{id}
+    </update>
+
+    <select id="existsByUsernameExcludeId" resultType="boolean">
+        SELECT COUNT(*) > 0 FROM users
+        WHERE username = #{username} AND id != #{excludeId}
     </select>
 
 </mapper>

@@ -25,7 +25,7 @@ const pagination = reactive({
 
 const saleForm = reactive({
   customerId: null,
-  items: [{ bookId: null, quantity: 1, price: 0 }]
+  items: [{ bookId: null, quantity: 1, price: 0, stock: null }]
 })
 
 const totalPrice = computed(() => {
@@ -86,7 +86,7 @@ function handleSizeChange(size) {
 
 async function fetchBooks() {
   try {
-    const data = await getBookList()
+    const data = await getBookList({ page: 1, pageSize: 10000 })
     bookOptions.value = data?.list || data || []
   } catch (error) {
     console.error('获取图书列表失败:', error)
@@ -95,7 +95,7 @@ async function fetchBooks() {
 
 async function fetchCustomers() {
   try {
-    const data = await getCustomerList()
+    const data = await getCustomerList({ page: 1, pageSize: 10000 })
     customerOptions.value = data?.list || data || []
   } catch (error) {
     console.error('获取客户列表失败:', error)
@@ -104,12 +104,12 @@ async function fetchCustomers() {
 
 function openAddDialog() {
   saleForm.customerId = null
-  saleForm.items = [{ bookId: null, quantity: 1, price: 0 }]
+  saleForm.items = [{ bookId: null, quantity: 1, price: 0, stock: null }]
   dialogVisible.value = true
 }
 
 function addItem() {
-  saleForm.items.push({ bookId: null, quantity: 1, price: 0 })
+  saleForm.items.push({ bookId: null, quantity: 1, price: 0, stock: null })
 }
 
 function removeItem(index) {
@@ -122,6 +122,10 @@ function onBookChange(bookId, index) {
   const book = bookOptions.value.find(b => b.id === bookId)
   if (book) {
     saleForm.items[index].price = book.price
+    saleForm.items[index].stock = book.stock ?? 0
+  } else {
+    saleForm.items[index].price = 0
+    saleForm.items[index].stock = null
   }
 }
 
@@ -229,14 +233,14 @@ onMounted(() => {
 
     <div class="table-section glass-panel" v-loading="loading">
       <el-table :data="saleList" stripe>
-        <el-table-column prop="customerName" label="客户" min-width="110" align="center">
+        <el-table-column prop="name" label="客户" min-width="110" align="center">
           <template #default="{ row }">
-            {{ row.customerName || '散客' }}
+            {{ row.name || '散客' }}
           </template>
         </el-table-column>
-        <el-table-column prop="customerGender" label="性别" width="90" align="center">
+        <el-table-column prop="gender" label="性别" width="90" align="center">
           <template #default="{ row }">
-            {{ row.customerGender || '-' }}
+            {{ row.gender || '-' }}
           </template>
         </el-table-column>
         <el-table-column prop="totalAmount" label="总金额" min-width="170" align="center">
@@ -294,6 +298,7 @@ onMounted(() => {
                 <el-select
                   v-model="item.bookId"
                   placeholder="选择图书"
+                  filterable
                   @change="onBookChange($event, index)"
                   style="width: 100%"
                 >
@@ -304,6 +309,13 @@ onMounted(() => {
                     :value="book.id"
                   />
                 </el-select>
+                <span
+                  v-if="item.bookId"
+                  class="stock-tip"
+                  :class="{ 'stock-low': item.stock !== null && item.stock < 5 }"
+                >
+                  当前库存：{{ item.stock ?? '...' }}
+                </span>
               </div>
               <div class="item-quantity">
                 <label class="item-label">数量</label>
@@ -324,12 +336,6 @@ onMounted(() => {
               </div>
               <div class="item-actions">
                 <el-button
-                  type="primary"
-                  :icon="Plus"
-                  @click="addItem"
-                  circle
-                />
-                <el-button
                   type="danger"
                   :icon="Minus"
                   :disabled="saleForm.items.length <= 1"
@@ -339,6 +345,11 @@ onMounted(() => {
               </div>
             </div>
           </div>
+        </div>
+
+        <div class="add-book-row">
+          <el-button type="primary" :icon="Plus" @click="addItem" circle />
+          <span class="add-book-text">添加图书</span>
         </div>
 
         <el-divider />
@@ -356,7 +367,7 @@ onMounted(() => {
 
     <el-dialog v-model="detailDialogVisible" title="销售详情" width="500px">
       <el-descriptions :column="1" border v-if="saleDetail">
-        <el-descriptions-item label="客户">{{ saleDetail.customerName || '散客' }}</el-descriptions-item>
+        <el-descriptions-item label="客户">{{ saleDetail.name || '散客' }}</el-descriptions-item>
         <el-descriptions-item label="总金额">¥{{ saleDetail.totalAmount?.toLocaleString() }}</el-descriptions-item>
         <el-descriptions-item label="销售时间">{{ new Date(saleDetail.saleDate).toLocaleString() }}</el-descriptions-item>
       </el-descriptions>
@@ -431,6 +442,18 @@ onMounted(() => {
   min-width: 200px;
 }
 
+.stock-tip {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #10b981;
+  font-weight: 500;
+}
+
+.stock-tip.stock-low {
+  color: #ef4444;
+}
+
 .item-quantity {
   width: 140px;
 }
@@ -468,6 +491,20 @@ onMounted(() => {
   align-items: center;
   gap: 8px;
   padding-bottom: 4px;
+}
+
+.add-book-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  padding-right: 4px;
+}
+
+.add-book-text {
+  font-size: 13px;
+  color: #3b82f6;
+  font-weight: 500;
 }
 
 .total-section {

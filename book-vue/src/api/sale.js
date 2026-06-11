@@ -16,12 +16,12 @@ export function getSalesByBookId(bookId) {
   return request.get(`/sales/book/${bookId}`)
 }
 
-export function updateSaleItem(itemId, data) {
-  return request.put(`/sales/items/${itemId}`, data)
+export function updateSaleItem(saleId, bookId, data) {
+  return request.put(`/sales/${saleId}/items/${bookId}`, data)
 }
 
-export function deleteSaleItem(itemId) {
-  return request.delete(`/sales/items/${itemId}`)
+export function deleteSaleItem(saleId, bookId) {
+  return request.delete(`/sales/${saleId}/items/${bookId}`)
 }
 
 export function deleteSale(id) {

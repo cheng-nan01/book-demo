@@ -6,22 +6,19 @@ import java.math.BigDecimal;
 /**
  * 销售明细实体 — 对应数据库 sale_items 表。
  * 每条记录代表销售单中一本书的销售详情。
- * bookTitle 来自 LEFT JOIN books 表的查询结果。
+ * title 来自 JOIN books 表的查询结果。
  */
 @Data
-public class SaleItem {
+public class SaleItems {
 
-    /** 主键，数据库自增 */
-    private Long id;
-
-    /** sale_items 表的外键 sale_id，关联 sales 表 */
+    /** sale_items 表的外键 sale_id，关联 sales 表（复合主键之一） */
     private Long saleId;
 
     /** sale_items 表的外键 book_id，关联 books 表 */
     private Long bookId;
 
     /** JOIN books 表获得的书名（不在 sale_items 表中） */
-    private String bookTitle;
+    private String title;
 
     /** 该图书的销售数量 */
     private Integer quantity;

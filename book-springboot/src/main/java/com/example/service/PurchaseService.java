@@ -46,7 +46,7 @@ public class PurchaseService {
 
         Purchase purchase = new Purchase();
         purchase.setBookId(bookId);
-        purchase.setBookTitle(book.getTitle());
+        purchase.setTitle(book.getTitle());
         purchase.setQuantity(quantity);
         purchase.setUnitPrice(unitPrice);
         purchase.setTotalAmount(unitPrice.multiply(BigDecimal.valueOf(quantity)));

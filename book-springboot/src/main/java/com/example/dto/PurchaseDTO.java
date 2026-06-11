@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 public class PurchaseDTO {
     private Long id;
     private Long bookId;
-    private String bookTitle;
+    private String title;
     private Integer quantity;
     private BigDecimal unitPrice;
     private BigDecimal totalAmount;

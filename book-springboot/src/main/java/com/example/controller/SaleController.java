@@ -2,10 +2,10 @@ package com.example.controller;
 
 import com.example.dto.SaleDTO;
 import com.example.dto.SaleCreateRequest;
-import com.example.dto.SaleItemDTO;
+import com.example.dto.SaleItemsDTO;
 import com.example.dto.PageResult;
 import com.example.entity.Sale;
-import com.example.entity.SaleItem;
+import com.example.entity.SaleItems;
 import com.example.service.SaleService;
 import com.example.util.Result;
 import com.github.pagehelper.PageInfo;
@@ -101,23 +101,25 @@ public class SaleController {
         }
     }
 
-    @PutMapping("/items/{itemId}")
-    public Result<Void> updateItem(@PathVariable Long itemId,
+    @PutMapping("/{saleId}/items/{bookId}")
+    public Result<Void> updateItem(@PathVariable Long saleId,
+                                    @PathVariable Long bookId,
                                     @RequestBody Map<String, Object> body) {
         try {
             Integer quantity = Integer.valueOf(body.get("quantity").toString());
             java.math.BigDecimal unitPrice = new java.math.BigDecimal(body.get("unitPrice").toString());
-            saleService.updateSaleItem(itemId, quantity, unitPrice);
+            saleService.updateSaleItem(saleId, bookId, quantity, unitPrice);
             return Result.success();
         } catch (Exception e) {
             return Result.error(e.getMessage());
         }
     }
 
-    @DeleteMapping("/items/{itemId}")
-    public Result<Void> deleteItem(@PathVariable Long itemId) {
+    @DeleteMapping("/{saleId}/items/{bookId}")
+    public Result<Void> deleteItem(@PathVariable Long saleId,
+                                    @PathVariable Long bookId) {
         try {
-            saleService.deleteSaleItem(itemId);
+            saleService.deleteSaleItem(saleId, bookId);
             return Result.success();
         } catch (Exception e) {
             return Result.error(e.getMessage());
@@ -138,14 +140,14 @@ public class SaleController {
         SaleDTO dto = new SaleDTO();
         dto.setId(sale.getId());
         dto.setCustomerId(sale.getCustomerId());
-        dto.setCustomerName(sale.getCustomerName());
-        dto.setCustomerGender(sale.getCustomerGender());
+        dto.setName(sale.getName());
+        dto.setGender(sale.getGender());
         dto.setTotalAmount(sale.getTotalAmount());
         dto.setTotalCost(sale.getTotalCost());
         dto.setSaleDate(sale.getSaleDate() != null ? sale.getSaleDate().toString() : null);
 
         if (sale.getItems() != null) {
-            List<SaleItemDTO> items = sale.getItems().stream()
+            List<SaleItemsDTO> items = sale.getItems().stream()
                     .map(this::convertItemToDTO)
                     .collect(Collectors.toList());
             dto.setItems(items);
@@ -154,11 +156,11 @@ public class SaleController {
         return dto;
     }
 
-    private SaleItemDTO convertItemToDTO(SaleItem item) {
-        SaleItemDTO dto = new SaleItemDTO();
-        dto.setId(item.getId());
+    private SaleItemsDTO convertItemToDTO(SaleItems item) {
+        SaleItemsDTO dto = new SaleItemsDTO();
+        dto.setSaleId(item.getSaleId());
         dto.setBookId(item.getBookId());
-        dto.setTitle(item.getBookTitle());
+        dto.setTitle(item.getTitle());
         dto.setQuantity(item.getQuantity());
         dto.setUnitPrice(item.getUnitPrice());
         dto.setUnitCost(item.getUnitCost());

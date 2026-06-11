@@ -1,7 +1,7 @@
 package com.example.mapper;
 
 import com.example.entity.Sale;
-import com.example.entity.SaleItem;
+import com.example.entity.SaleItems;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,14 +24,14 @@ public interface SaleMapper {
                       @Param("startDate") LocalDateTime startDate,
                       @Param("endDate") LocalDateTime endDate);
 
-    /** 按主键查销售单，LEFT JOIN customers 获取客户名和性别 */
+    /** 按主键查销售单，JOIN customers 获取客户名和性别 */
     Sale findById(Long id);
 
-    /** 按主键查询单条销售明细 */
-    SaleItem findItemById(@Param("itemId") Long itemId);
+    /** 按复合主键查询单条销售明细 */
+    SaleItems findItemBySaleAndBook(@Param("saleId") Long saleId, @Param("bookId") Long bookId);
 
     /** 查询某销售单下所有明细行，LEFT JOIN books 获取书名 */
-    List<SaleItem> findItemsBySaleId(Long saleId);
+    List<SaleItems> findItemsBySaleId(Long saleId);
 
     /** 新增销售单，自动回填自增主键 */
     int insert(Sale sale);
@@ -39,7 +39,7 @@ public interface SaleMapper {
     // ===== 销售明细 CRUD =====
 
     /** 新增一条销售明细 */
-    int insertItem(SaleItem item);
+    int insertItem(SaleItems item);
 
     // ===== 删除 =====
 
@@ -61,10 +61,10 @@ public interface SaleMapper {
     List<Sale> findSalesByBookId(@Param("bookId") Long bookId);
 
     /** 删除单条销售明细 */
-    int deleteItemById(@Param("itemId") Long itemId);
+    int deleteItemBySaleAndBook(@Param("saleId") Long saleId, @Param("bookId") Long bookId);
 
-    /** 更新一条销售明细 */
-    int updateItem(SaleItem item);
+    /** 更新一条销售明细（按 saleId + bookId 定位） */
+    int updateItem(SaleItems item);
 
     /** 明细变动后重算销售单总金额和总成本 */
     int recalcSaleTotals(@Param("saleId") Long saleId);

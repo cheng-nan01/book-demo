@@ -4,10 +4,6 @@ import com.example.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-/**
- * 用户表（users）数据访问接口。
- * 用于登录/注册认证流程。
- */
 @Mapper
 public interface UserMapper {
 
@@ -22,4 +18,13 @@ public interface UserMapper {
 
     /** 按主键查询 */
     User findById(Long id);
+
+    /** 修改密码 */
+    int updatePassword(@Param("id") Long id, @Param("password") String password);
+
+    /** 修改用户名 */
+    int updateUsername(@Param("id") Long id, @Param("username") String username);
+
+    /** 判断用户名是否被他人占用（改名时检查） */
+    boolean existsByUsernameExcludeId(@Param("username") String username, @Param("excludeId") Long excludeId);
 }

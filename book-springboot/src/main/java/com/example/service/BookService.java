@@ -31,11 +31,18 @@ public class BookService {
         return bookMapper.findById(id);
     }
 
+    /** 查 ISBN 是否已存在（直接按存储值查） */
+    private boolean isbnExists(String raw, Long excludeId) {
+        Book existing = bookMapper.findByIsbn(raw);
+        return existing != null && !existing.getId().equals(excludeId);
+    }
+
     @Transactional
     public Book save(Book book) {
-        if (book.getIsbn() != null && !book.getIsbn().trim().isEmpty()) {
-            if (bookMapper.findByIsbn(book.getIsbn()) != null) {
-                throw new RuntimeException("ISBN已存在，该图书已录入系统");
+        String raw = book.getIsbn();
+        if (raw != null && !raw.trim().isEmpty()) {
+            if (isbnExists(raw, -1L)) {
+                throw new RuntimeException("该ISBN已存在，不能重复添加");
             }
         }
         book.prePersist();
@@ -48,9 +55,8 @@ public class BookService {
         Book book = findById(id);
 
         if (bookDetails.getIsbn() != null && !bookDetails.getIsbn().trim().isEmpty()) {
-            Book existing = bookMapper.findByIsbn(bookDetails.getIsbn());
-            if (existing != null && !existing.getId().equals(id)) {
-                throw new RuntimeException("ISBN已被其他图书使用");
+            if (isbnExists(bookDetails.getIsbn(), id)) {
+                throw new RuntimeException("该ISBN已被其他图书使用");
             }
             book.setIsbn(bookDetails.getIsbn());
         }
@@ -72,9 +78,7 @@ public class BookService {
         if (saleMapper.existsItemByBookId(id)) {
             throw new RuntimeException("该图书存在销售记录，无法删除");
         }
-        if (purchaseMapper.existsByBookId(id)) {
-            throw new RuntimeException("该图书存在进货记录，无法删除");
-        }
+        purchaseMapper.deleteByBookId(id);
         bookMapper.deleteById(id);
     }
 

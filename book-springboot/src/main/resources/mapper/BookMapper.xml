@@ -3,32 +3,19 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.mapper.BookMapper">
 
-    <resultMap id="bookMap" type="com.example.entity.Book">
-        <id property="id" column="id"/>
-        <result property="isbn" column="isbn"/>
-        <result property="title" column="title"/>
-        <result property="author" column="author"/>
-        <result property="publisher" column="publisher"/>
-        <result property="price" column="price"/>
-        <result property="costPrice" column="cost_price"/>
-        <result property="stock" column="stock"/>
-        <result property="createdAt" column="created_at"/>
-        <result property="updatedAt" column="updated_at"/>
-    </resultMap>
-
-    <select id="findAll" resultMap="bookMap">
+    <select id="findAll" resultType="com.example.entity.Book">
         SELECT * FROM books ORDER BY id DESC
     </select>
 
-    <select id="findById" resultMap="bookMap">
+    <select id="findById" resultType="com.example.entity.Book">
         SELECT * FROM books WHERE id = #{id}
     </select>
 
-    <select id="findByIsbn" resultMap="bookMap">
+    <select id="findByIsbn" resultType="com.example.entity.Book">
         SELECT * FROM books WHERE isbn = #{isbn}
     </select>
 
-    <select id="search" resultMap="bookMap">
+    <select id="search" resultType="com.example.entity.Book">
         SELECT * FROM books
         WHERE 1=1
             <if test="keyword != null and keyword != ''">

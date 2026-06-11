@@ -25,8 +25,8 @@ public interface PurchaseMapper {
     /** 新增进货记录，自动回填自增主键 */
     int insert(Purchase purchase);
 
-    /** 检查是否有进货记录关联某图书（删除图书前校验） */
-    boolean existsByBookId(Long bookId);
+    /** 删除某图书的所有进货记录 */
+    int deleteByBookId(Long bookId);
 
     /** 某时间段的进货总额 */
     Double getTotalPurchaseAmount(@Param("startDate") String startDate,

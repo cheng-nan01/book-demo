@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS purchases (
 
 -- ---------- 销售表（订单主表）----------
 CREATE TABLE IF NOT EXISTS sales (
-    id            BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键，自增',
+    sale_id       BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键，自增',
     customer_id   BIGINT                           COMMENT '外键 → customers.id（可为空，散客）',
     total_amount  DECIMAL(10,2) NOT NULL DEFAULT 0.00 COMMENT '订单总金额 = 所有明细 subtotal 之和',
     total_cost    DECIMAL(10,2) NOT NULL DEFAULT 0.00 COMMENT '订单总成本 = 所有明细 unitCost×quantity 之和',
@@ -58,14 +58,14 @@ CREATE TABLE IF NOT EXISTS sales (
 
 -- ---------- 销售明细表（订单中的每本书）----------
 CREATE TABLE IF NOT EXISTS sale_items (
-    id          BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键，自增',
     sale_id     BIGINT         NOT NULL            COMMENT '外键 → sales.id（ON DELETE CASCADE：删订单自动删明细）',
     book_id     BIGINT         NOT NULL            COMMENT '外键 → books.id',
     quantity    INT            NOT NULL            COMMENT '购买数量',
     unit_price  DECIMAL(10,2)  NOT NULL            COMMENT '销售单价（取自 books.price）',
     unit_cost   DECIMAL(10,2)  NOT NULL DEFAULT 0.00 COMMENT '销售成本（取自 books.cost_price）',
     subtotal    DECIMAL(10,2)  NOT NULL            COMMENT '小计 = unit_price × quantity',
-    CONSTRAINT fk_saleitem_sale FOREIGN KEY (sale_id) REFERENCES sales(id) ON DELETE CASCADE,
+    PRIMARY KEY (sale_id, book_id),
+    CONSTRAINT fk_saleitem_sale FOREIGN KEY (sale_id) REFERENCES sales(sale_id) ON DELETE CASCADE,
     CONSTRAINT fk_saleitem_book FOREIGN KEY (book_id) REFERENCES books(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='销售明细表';
 

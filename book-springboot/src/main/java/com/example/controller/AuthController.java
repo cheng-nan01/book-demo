@@ -69,4 +69,38 @@ public class AuthController {
             return Result.error(e.getMessage());
         }
     }
+
+    @PutMapping("/password")
+    public Result<String> changePassword(@RequestBody Map<String, String> body, HttpSession session) {
+        try {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> userInfo = (Map<String, Object>) session.getAttribute("user");
+            if (userInfo == null) {
+                return Result.unauthorized("未登录");
+            }
+            Long userId = Long.valueOf(userInfo.get("id").toString());
+            authService.changePassword(userId, body.get("oldPassword"), body.get("newPassword"));
+            return Result.success("密码修改成功");
+        } catch (Exception e) {
+            return Result.error(e.getMessage());
+        }
+    }
+
+    @PutMapping("/username")
+    public Result<String> changeUsername(@RequestBody Map<String, String> body, HttpSession session) {
+        try {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> userInfo = (Map<String, Object>) session.getAttribute("user");
+            if (userInfo == null) {
+                return Result.unauthorized("未登录");
+            }
+            Long userId = Long.valueOf(userInfo.get("id").toString());
+            String newUsername = authService.changeUsername(userId, body.get("username"), body.get("password"));
+            userInfo.put("username", newUsername);
+            session.setAttribute("user", userInfo);
+            return Result.success("用户名修改成功");
+        } catch (Exception e) {
+            return Result.error(e.getMessage());
+        }
+    }
 }

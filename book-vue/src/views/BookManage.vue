@@ -163,13 +163,13 @@ const saleHistoryKeyword = ref('')
 const saleHistoryStartDate = ref('')
 const saleHistoryEndDate = ref('')
 const editItemVisible = ref(false)
-const editItemForm = reactive({ itemId: null, saleId: null, quantity: 1, unitPrice: 0 })
+const editItemForm = reactive({ saleId: null, bookId: null, quantity: 1, unitPrice: 0 })
 
 const filteredSaleHistory = computed(() => {
   let list = saleHistoryList.value
   if (saleHistoryKeyword.value) {
     const kw = saleHistoryKeyword.value.toLowerCase()
-    list = list.filter(s => (s.customerName || '散客').toLowerCase().includes(kw))
+    list = list.filter(s => (s.name || '散客').toLowerCase().includes(kw))
   }
   if (saleHistoryStartDate.value) {
     list = list.filter(s => s.saleDate >= saleHistoryStartDate.value + 'T00:00:00')
@@ -192,15 +192,15 @@ async function openSaleHistory(row) {
 }
 
 function openEditItem(saleId, item) {
-  editItemForm.itemId = item.id
   editItemForm.saleId = saleId
+  editItemForm.bookId = item.bookId
   editItemForm.quantity = item.quantity
   editItemForm.unitPrice = item.unitPrice
   editItemVisible.value = true
 }
 
 async function saveEditItem() {
-  await updateSaleItem(editItemForm.itemId, {
+  await updateSaleItem(editItemForm.saleId, editItemForm.bookId, {
     quantity: editItemForm.quantity,
     unitPrice: editItemForm.unitPrice
   })
@@ -209,10 +209,10 @@ async function saveEditItem() {
   openSaleHistory(saleHistoryBook.value)
 }
 
-async function handleDeleteItem(itemId) {
+async function handleDeleteItem(saleId, bookId) {
   try {
     await ElMessageBox.confirm('确定要从销售单中移除该图书记录吗？', '提示', { type: 'warning' })
-    await deleteSaleItem(itemId)
+    await deleteSaleItem(saleId, bookId)
     ElMessage.success('删除成功')
     openSaleHistory(saleHistoryBook.value)
   } catch (error) {
@@ -322,10 +322,10 @@ onMounted(() => {
       </div>
     </div>
 
-    <el-dialog v-model="dialogVisible" :title="dialogTitle" width="500px">
+    <el-dialog v-model="dialogVisible" :title="dialogTitle" width="600px">
       <el-form ref="bookFormRef" :model="bookForm" :rules="bookRules" label-width="80px">
         <el-form-item label="ISBN号" prop="isbn">
-          <el-input v-model="bookForm.isbn" placeholder="请输入ISBN" />
+          <el-input v-model="bookForm.isbn" placeholder="输入13位ISBN" maxlength="17" />
         </el-form-item>
         <el-form-item label="书名" prop="title">
           <el-input v-model="bookForm.title" placeholder="请输入书名" />
@@ -389,8 +389,8 @@ onMounted(() => {
         <span style="color:#64748b;font-size:13px">共 {{ filteredSaleHistory.length }} 条</span>
       </div>
       <el-table :data="filteredSaleHistory" stripe size="small" v-if="saleHistoryList.length">
-        <el-table-column prop="customerName" label="客户" width="100" align="center">
-          <template #default="{ row }">{{ row.customerName || '散客' }}</template>
+        <el-table-column prop="name" label="客户" width="100" align="center">
+          <template #default="{ row }">{{ row.name || '散客' }}</template>
         </el-table-column>
         <el-table-column label="购买详情" min-width="280">
           <template #default="{ row }">
@@ -398,7 +398,7 @@ onMounted(() => {
               <span>{{ item.title }} x{{ item.quantity }} @ ¥{{ item.unitPrice }}</span>
               <span class="subtotal-tag">小计 ¥{{ item.subtotal }}</span>
               <el-button type="primary" link size="small" @click="openEditItem(row.id, item)">编辑</el-button>
-              <el-button type="danger" link size="small" @click="handleDeleteItem(item.id)">删除</el-button>
+              <el-button type="danger" link size="small" @click="handleDeleteItem(row.id, item.bookId)">删除</el-button>
             </div>
           </template>
         </el-table-column>
@@ -460,4 +460,5 @@ onMounted(() => {
   font-weight: 600;
   font-size: 13px;
 }
+
 </style>

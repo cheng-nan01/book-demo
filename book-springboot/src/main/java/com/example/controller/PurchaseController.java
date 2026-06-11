@@ -63,7 +63,7 @@ public class PurchaseController {
         PurchaseDTO dto = new PurchaseDTO();
         dto.setId(purchase.getId());
         dto.setBookId(purchase.getBookId());
-        dto.setBookTitle(purchase.getBookTitle());
+        dto.setTitle(purchase.getTitle());
         dto.setQuantity(purchase.getQuantity());
         dto.setUnitPrice(purchase.getUnitPrice());
         dto.setTotalAmount(purchase.getTotalAmount());

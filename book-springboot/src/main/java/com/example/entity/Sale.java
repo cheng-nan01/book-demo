@@ -8,23 +8,23 @@ import java.util.List;
 
 /**
  * 销售实体 — 对应数据库 sales 表。
- * 客户信息（customerName / customerGender）来自 LEFT JOIN customers 表的查询结果。
+ * 客户信息（name / gender）来自 JOIN customers 表的查询结果。
  * 明细列表（items）来自 sale_items 表，由 Mapper 层单独查询后填充。
  */
 @Data
 public class Sale {
 
-    /** 主键，数据库自增 */
+    /** 主键 sale_id，数据库自增（别名映射为 id） */
     private Long id;
 
     /** sales 表的外键 customer_id */
     private Long customerId;
 
     /** JOIN customers 表获得的客户名（不在 sales 表中） */
-    private String customerName;
+    private String name;
 
     /** JOIN customers 表获得的客户性别（不在 sales 表中） */
-    private String customerGender;
+    private String gender;
 
     /** 订单总金额 = 所有明细 subtotal 之和 */
     private BigDecimal totalAmount;
@@ -36,7 +36,7 @@ public class Sale {
     private LocalDateTime saleDate;
 
     /** 销售明细列表，不直接对应数据库列，由 Mapper 单独查询 sale_items 表后填充 */
-    private List<SaleItem> items = new ArrayList<>();
+    private List<SaleItems> items = new ArrayList<>();
 
     public void prePersist() {
         this.saleDate = LocalDateTime.now();

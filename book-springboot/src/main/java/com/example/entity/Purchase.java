@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 /**
  * 进货实体 — 对应数据库 purchases 表。
- * bookTitle 来自 LEFT JOIN books 表的查询结果。
+ * title 来自 JOIN books 表的查询结果。
  */
 @Data
 public class Purchase {
@@ -18,7 +18,7 @@ public class Purchase {
     private Long bookId;
 
     /** JOIN books 表获得的书名（不在 purchases 表中） */
-    private String bookTitle;
+    private String title;
 
     /** 进货数量 */
     private Integer quantity;

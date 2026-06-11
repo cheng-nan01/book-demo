@@ -15,3 +15,11 @@ export function me() {
 export function logout() {
   return request.post('/auth/logout')
 }
+
+export function changePassword(data) {
+  return request.put('/auth/password', data)
+}
+
+export function changeUsername(data) {
+  return request.put('/auth/username', data)
+}

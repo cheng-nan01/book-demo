@@ -37,6 +37,12 @@ const routes = [
     name: 'Statistics',
     component: () => import('@/views/Statistics.vue'),
     meta: { title: '统计报表', requiresAuth: true }
+  },
+  {
+    path: '/account',
+    name: 'AccountSettings',
+    component: () => import('@/views/AccountSettings.vue'),
+    meta: { title: '账户设置', requiresAuth: true }
   }
 ]
 

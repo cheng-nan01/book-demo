@@ -8,10 +8,10 @@ import java.util.List;
 public class SaleDTO {
     private Long id;
     private Long customerId;
-    private String customerName;
-    private String customerGender;
+    private String name;
+    private String gender;
     private BigDecimal totalAmount;
     private BigDecimal totalCost;
     private String saleDate;
-    private List<SaleItemDTO> items;
+    private List<SaleItemsDTO> items;
 }

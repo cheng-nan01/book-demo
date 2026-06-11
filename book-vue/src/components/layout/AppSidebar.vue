@@ -7,7 +7,8 @@ import {
   User,
   ShoppingCart,
   TrendCharts,
-  SwitchButton
+  SwitchButton,
+  Setting
 } from '@element-plus/icons-vue'
 
 const route = useRoute()
@@ -51,10 +52,11 @@ async function handleLogout() {
     </nav>
 
     <div class="sidebar-footer">
-      <div class="user-info">
+      <router-link to="/account" class="user-info account-link">
         <el-icon class="user-avatar"><User /></el-icon>
         <span class="user-name">{{ userStore.username || '用户' }}</span>
-      </div>
+        <el-icon class="settings-icon"><Setting /></el-icon>
+      </router-link>
       <button class="logout-btn" @click="handleLogout">
         <el-icon><SwitchButton /></el-icon>
         <span>退出登录</span>
@@ -170,6 +172,17 @@ async function handleLogout() {
   border-radius: 10px;
 }
 
+.account-link {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.account-link:hover {
+  background: rgba(59, 130, 246, 0.06);
+  border-color: rgba(59, 130, 246, 0.15);
+}
+
 .user-avatar {
   font-size: 18px;
   color: #3b82f6;
@@ -179,6 +192,17 @@ async function handleLogout() {
   font-size: 14px;
   font-weight: 500;
   color: #334155;
+  flex: 1;
+}
+
+.settings-icon {
+  font-size: 14px;
+  color: #94a3b8;
+  transition: color 0.2s;
+}
+
+.account-link:hover .settings-icon {
+  color: #3b82f6;
 }
 
 .logout-btn {
