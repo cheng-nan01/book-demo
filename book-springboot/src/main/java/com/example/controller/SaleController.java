@@ -89,7 +89,7 @@ public class SaleController {
                     })
                     .collect(Collectors.toList());
 
-            Sale sale = saleService.createSale(request.getCustomerId(), items);
+            Sale sale = saleService.createSale(request.getCustomerId(), request.getSalespersonId(), items);
 
             Map<String, Object> result = new HashMap<>();
             result.put("id", sale.getId());
@@ -142,6 +142,9 @@ public class SaleController {
         dto.setCustomerId(sale.getCustomerId());
         dto.setName(sale.getName());
         dto.setGender(sale.getGender());
+        dto.setSalespersonId(sale.getSalespersonId());
+        dto.setSalespersonName(sale.getSalespersonName());
+        dto.setSalespersonGender(sale.getSalespersonGender());
         dto.setTotalAmount(sale.getTotalAmount());
         dto.setTotalCost(sale.getTotalCost());
         dto.setSaleDate(sale.getSaleDate() != null ? sale.getSaleDate().toString() : null);

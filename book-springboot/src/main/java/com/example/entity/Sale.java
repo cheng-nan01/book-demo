@@ -26,6 +26,15 @@ public class Sale {
     /** JOIN customers 表获得的客户性别（不在 sales 表中） */
     private String gender;
 
+    /** sales 表的外键 salesperson_id */
+    private Long salespersonId;
+
+    /** JOIN salespeople 表获得的销售员姓名（不在 sales 表中） */
+    private String salespersonName;
+
+    /** JOIN salespeople 表获得的销售员性别（不在 sales 表中） */
+    private String salespersonGender;
+
     /** 订单总金额 = 所有明细 subtotal 之和 */
     private BigDecimal totalAmount;
 

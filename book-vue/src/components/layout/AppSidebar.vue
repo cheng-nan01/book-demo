@@ -5,6 +5,7 @@ import {
   DataAnalysis,
   Notebook,
   User,
+  UserFilled,
   ShoppingCart,
   TrendCharts,
   SwitchButton,
@@ -20,7 +21,8 @@ const menuItems = [
   { path: '/books', icon: Notebook, title: '图书管理' },
   { path: '/customers', icon: User, title: '客户管理' },
   { path: '/sales', icon: ShoppingCart, title: '销售管理' },
-  { path: '/statistics', icon: TrendCharts, title: '统计报表' }
+  { path: '/statistics', icon: TrendCharts, title: '统计报表' },
+  { path: '/salespeople', icon: UserFilled, title: '销售员管理' }
 ]
 
 async function handleLogout() {

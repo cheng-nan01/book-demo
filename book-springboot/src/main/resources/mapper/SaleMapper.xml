@@ -5,9 +5,12 @@
 
     <!-- ===== 条件查询销售单（子查询拿客户信息，兼容散客 customer_id=NULL） ===== -->
     <select id="search" resultType="com.example.entity.Sale">
-        SELECT s.sale_id AS id, s.customer_id, s.total_amount, s.total_cost, s.sale_date,
+        SELECT s.sale_id AS id, s.customer_id, s.salesperson_id,
+               s.total_amount, s.total_cost, s.sale_date,
                (SELECT c.name FROM customers c WHERE c.id = s.customer_id) AS name,
-               (SELECT c.gender FROM customers c WHERE c.id = s.customer_id) AS gender
+               (SELECT c.gender FROM customers c WHERE c.id = s.customer_id) AS gender,
+               (SELECT sp.name FROM salespeople sp WHERE sp.id = s.salesperson_id) AS salesperson_name,
+               (SELECT sp.gender FROM salespeople sp WHERE sp.id = s.salesperson_id) AS salesperson_gender
         FROM sales s
         WHERE 1=1
             <if test="customerId != null">
@@ -21,9 +24,12 @@
 
     <!-- ===== 单条销售单 ===== -->
     <select id="findById" resultType="com.example.entity.Sale">
-        SELECT s.sale_id AS id, s.customer_id, s.total_amount, s.total_cost, s.sale_date,
+        SELECT s.sale_id AS id, s.customer_id, s.salesperson_id,
+               s.total_amount, s.total_cost, s.sale_date,
                (SELECT c.name FROM customers c WHERE c.id = s.customer_id) AS name,
-               (SELECT c.gender FROM customers c WHERE c.id = s.customer_id) AS gender
+               (SELECT c.gender FROM customers c WHERE c.id = s.customer_id) AS gender,
+               (SELECT sp.name FROM salespeople sp WHERE sp.id = s.salesperson_id) AS salesperson_name,
+               (SELECT sp.gender FROM salespeople sp WHERE sp.id = s.salesperson_id) AS salesperson_gender
         FROM sales s
         WHERE s.sale_id = #{id}
     </select>
@@ -45,8 +51,8 @@
 
     <!-- ===== 新增 ===== -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO sales (customer_id, total_amount, total_cost, sale_date)
-        VALUES (#{customerId}, #{totalAmount}, #{totalCost}, #{saleDate})
+        INSERT INTO sales (customer_id, salesperson_id, total_amount, total_cost, sale_date)
+        VALUES (#{customerId}, #{salespersonId}, #{totalAmount}, #{totalCost}, #{saleDate})
     </insert>
 
     <insert id="insertItem">

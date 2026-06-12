@@ -6,5 +6,6 @@ import java.util.List;
 @Data
 public class SaleCreateRequest {
     private Long customerId;
+    private Long salespersonId;
     private List<SaleItemsRequest> items;
 }

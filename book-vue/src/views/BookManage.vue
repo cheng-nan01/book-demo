@@ -392,7 +392,10 @@ onMounted(() => {
         <el-table-column prop="name" label="客户" width="100" align="center">
           <template #default="{ row }">{{ row.name || '散客' }}</template>
         </el-table-column>
-        <el-table-column label="购买详情" min-width="280">
+        <el-table-column prop="salespersonName" label="销售员" width="80" align="center">
+          <template #default="{ row }">{{ row.salespersonName || '-' }}</template>
+        </el-table-column>
+        <el-table-column label="购买详情" min-width="250">
           <template #default="{ row }">
             <div v-for="item in row.items" :key="item.id" class="sale-item-mini">
               <span>{{ item.title }} x{{ item.quantity }} @ ¥{{ item.unitPrice }}</span>

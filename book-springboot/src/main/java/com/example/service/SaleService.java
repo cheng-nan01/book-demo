@@ -77,9 +77,10 @@ public class SaleService {
     }
 
     @Transactional
-    public Sale createSale(Long customerId, List<Map<String, Object>> items) {
+    public Sale createSale(Long customerId, Long salespersonId, List<Map<String, Object>> items) {
         Sale sale = new Sale();
         sale.setCustomerId(customerId);
+        sale.setSalespersonId(salespersonId);
         sale.prePersist();
 
         BigDecimal totalAmount = BigDecimal.ZERO;

@@ -5,6 +5,7 @@ import { ShoppingCart, Search, Plus, Minus } from '@element-plus/icons-vue'
 import { getSaleList, addSale, getSale, deleteSale } from '@/api/sale'
 import { getBookList } from '@/api/book'
 import { getCustomerList } from '@/api/customer'
+import { getSalespeople } from '@/api/salespeople'
 
 const loading = ref(false)
 const saleList = ref([])
@@ -15,6 +16,7 @@ const filterEndDate = ref('')
 const filterCustomerId = ref(null)
 const bookOptions = ref([])
 const customerOptions = ref([])
+const salespeopleOptions = ref([])
 const saleDetail = ref(null)
 
 const pagination = reactive({
@@ -25,6 +27,7 @@ const pagination = reactive({
 
 const saleForm = reactive({
   customerId: null,
+  salespersonId: null,
   items: [{ bookId: null, quantity: 1, price: 0, stock: null }]
 })
 
@@ -102,8 +105,18 @@ async function fetchCustomers() {
   }
 }
 
+async function fetchSalespeople() {
+  try {
+    const data = await getSalespeople({ pageSize: 10000 })
+    salespeopleOptions.value = data?.list || data || []
+  } catch (error) {
+    console.error('获取销售员列表失败:', error)
+  }
+}
+
 function openAddDialog() {
   saleForm.customerId = null
+  saleForm.salespersonId = null
   saleForm.items = [{ bookId: null, quantity: 1, price: 0, stock: null }]
   dialogVisible.value = true
 }
@@ -139,6 +152,7 @@ async function handleSubmit() {
 
     await addSale({
       customerId: saleForm.customerId,
+      salespersonId: saleForm.salespersonId,
       items: validItems.map(item => ({
         bookId: item.bookId,
         quantity: item.quantity
@@ -181,6 +195,7 @@ onMounted(() => {
   fetchSales()
   fetchBooks()
   fetchCustomers()
+  fetchSalespeople()
 })
 </script>
 
@@ -243,7 +258,13 @@ onMounted(() => {
             {{ row.gender || '-' }}
           </template>
         </el-table-column>
-        <el-table-column prop="totalAmount" label="总金额" min-width="170" align="center">
+        <el-table-column prop="salespersonName" label="销售员" width="110" align="center">
+          <template #default="{ row }">
+            <span v-if="row.salespersonName">{{ row.salespersonName }} / {{ row.salespersonGender || '-' }}</span>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="totalAmount" label="总金额" min-width="150" align="center">
           <template #default="{ row }">
             <span class="amount-text">¥{{ row.totalAmount?.toLocaleString() }}</span>
           </template>
@@ -282,6 +303,17 @@ onMounted(() => {
               :key="item.id"
               :label="item.name"
               :value="item.id"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="销售员">
+          <el-select v-model="saleForm.salespersonId" placeholder="选择销售员" style="width: 100%">
+            <el-option
+              v-for="sp in salespeopleOptions"
+              :key="sp.id"
+              :label="sp.name"
+              :value="sp.id"
             />
           </el-select>
         </el-form-item>
@@ -368,6 +400,7 @@ onMounted(() => {
     <el-dialog v-model="detailDialogVisible" title="销售详情" width="500px">
       <el-descriptions :column="1" border v-if="saleDetail">
         <el-descriptions-item label="客户">{{ saleDetail.name || '散客' }}</el-descriptions-item>
+        <el-descriptions-item label="销售员">{{ saleDetail.salespersonName || '-' }}</el-descriptions-item>
         <el-descriptions-item label="总金额">¥{{ saleDetail.totalAmount?.toLocaleString() }}</el-descriptions-item>
         <el-descriptions-item label="销售时间">{{ new Date(saleDetail.saleDate).toLocaleString() }}</el-descriptions-item>
       </el-descriptions>

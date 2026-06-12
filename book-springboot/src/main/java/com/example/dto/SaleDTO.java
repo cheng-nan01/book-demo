@@ -10,6 +10,9 @@ public class SaleDTO {
     private Long customerId;
     private String name;
     private String gender;
+    private Long salespersonId;
+    private String salespersonName;
+    private String salespersonGender;
     private BigDecimal totalAmount;
     private BigDecimal totalCost;
     private String saleDate;

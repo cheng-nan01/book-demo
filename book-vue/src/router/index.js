@@ -39,6 +39,12 @@ const routes = [
     meta: { title: '统计报表', requiresAuth: true }
   },
   {
+    path: '/salespeople',
+    name: 'Salespeople',
+    component: () => import('@/views/SalespeopleManage.vue'),
+    meta: { title: '销售员管理', requiresAuth: true }
+  },
+  {
     path: '/account',
     name: 'AccountSettings',
     component: () => import('@/views/AccountSettings.vue'),
